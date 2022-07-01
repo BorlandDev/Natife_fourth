@@ -1,12 +1,13 @@
 package com.borlanddev.natife_fourth
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.borlanddev.natife_fourth.adapter.ItemAdapter
-import androidx.activity.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.borlanddev.natife_fourth.databinding.ActivityMainBinding
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,10 +19,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+        val rx = Rx()
 
         itemAdapter = ItemAdapter()
 
-        observeWithLiveData()
+        //observeWithLiveData()
+        observeWithRx(rx)
 
         binding?.recyclerView?.layoutManager = GridLayoutManager(this, 3)
         binding?.recyclerView?.adapter = itemAdapter
@@ -32,4 +35,14 @@ class MainActivity : AppCompatActivity() {
             itemAdapter?.addNumber(it)
         }
     }
+
+    private fun observeWithRx(rx: Rx) {
+        rx.source
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                itemAdapter?.addNumber(it)
+            }
+    }
+
 }

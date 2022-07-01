@@ -1,18 +1,19 @@
 package com.borlanddev.natife_fourth.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.borlanddev.natife_fourth.databinding.ItemListBinding
 
-class ItemAdapter(): RecyclerView.Adapter<ItemHolder>() {
+class ItemAdapter: RecyclerView.Adapter<ItemHolder>() {
 
     private var items: List<Int> = emptyList()
+    @SuppressLint("NotifyDataSetChanged")
     set(value) {
         field = value
         notifyDataSetChanged()
     }
-
 
     fun addNumber(_items: List<Int>) {
         items = _items
