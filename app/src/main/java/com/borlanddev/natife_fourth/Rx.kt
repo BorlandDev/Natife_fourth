@@ -10,10 +10,8 @@ class Rx {
 
     val source: Observable<MutableList<Int>> = Observable
         .interval(0, 2, TimeUnit.SECONDS)
-        .flatMap {
-            return@flatMap Observable.create { emitter ->
-                list.add(Random.nextInt(0, 100))
-                emitter.onNext(list)
-            }
+        .map {
+            list.add(Random.nextInt(0, 100))
+            return@map list
         }
 }
