@@ -8,23 +8,27 @@ import com.borlanddev.natife_fourth.adapter.ItemAdapter
 import com.borlanddev.natife_fourth.databinding.ActivityMainBinding
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
     private var itemAdapter: ItemAdapter? = null
     private val mainVM: MainViewModel by viewModels()
+    private val rx = Rx()
+    private val coroutine = Coroutine()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-        val rx = Rx()
-
         itemAdapter = ItemAdapter()
 
         //observeWithLiveData()
-        observeWithRx(rx)
+        //observeWithRx(rx)
+        //observeWithCoroutines()
 
         binding?.recyclerView?.layoutManager = GridLayoutManager(this, 3)
         binding?.recyclerView?.adapter = itemAdapter
@@ -32,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeWithLiveData() {
         mainVM.items.observe(this) {
-            itemAdapter?.addNumber(it)
+            itemAdapter?.addNumbers(it)
         }
     }
 
@@ -41,8 +45,18 @@ class MainActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                itemAdapter?.addNumber(it)
+                itemAdapter?.addNumbers(it)
             }
     }
 
+    private fun observeWithCoroutines() {
+        val list = mutableListOf<Int>()
+
+        GlobalScope.launch(Dispatchers.Main) {
+            coroutine.numbers.collect {
+                list.add(it)
+                itemAdapter?.addNumbers(list)
+            }
+        }
+    }
 }

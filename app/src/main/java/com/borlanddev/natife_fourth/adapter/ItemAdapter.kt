@@ -15,7 +15,7 @@ class ItemAdapter: RecyclerView.Adapter<ItemHolder>() {
         notifyDataSetChanged()
     }
 
-    fun addNumber(_items: List<Int>) {
+    fun addNumbers(_items: List<Int>) {
         items = _items
     }
 
